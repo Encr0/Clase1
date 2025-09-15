@@ -1,0 +1,107 @@
+/* Palette colors */
+:root {
+    --color-1: #0a0806;
+    --color-2: #D9C4B0;
+    --color-3: #ECEEDF;
+    --color-4: #BBDCE5;
+}
+
+/* Navbar customization */
+.custom-navbar {
+    background-color: var(--color-4);
+    color: var(--color-1);
+}
+
+.custom-navbar .navbar-brand {
+    color: var(--color-1);
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.custom-navbar .btn-logout {
+    background-color: var(--color-1);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.custom-navbar .btn-logout:hover {
+    background-color: var(--color-2);
+    color: #000;
+}
+
+/* Welcome message styling */
+.welcome-message {
+    background-color: var(--color-3);
+    color: var(--color-1);
+    font-size: 1.5rem;
+    max-width: 480px;
+}
+
+/* Register card */
+.register-card {
+    background-color: var(--color-3);
+    width: 100%;
+    max-width: 400px;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    color: var(--color-1);
+}
+
+/* Login card */
+.login-card {
+    background-color: var(--color-3);
+    width: 100%;
+    max-width: 400px;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    color: var(--color-1);
+}
+
+.login-card img {
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* Form labels */
+.form-label {
+    font-weight: 600;
+    color: var(--color-1);
+}
+
+/* Links styling */
+.link-underline {
+    color: var(--color-1);
+    text-decoration: underline;
+}
+
+.link-underline:hover {
+    color: var(--color-2);
+    text-decoration: none;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--color-1);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-2);
+    color: #000;
+}
+
+.btn-success {
+    background-color: var(--color-4);
+    border: none;
+    color: var(--color-1);
+    font-weight: 600;
+}
+
+.btn-success:hover {
+    background-color: var(--color-2);
+    color: #000;
+}
