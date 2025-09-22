@@ -1,40 +1,81 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Form
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
+import mysql.connector
+from mysql.connector import Error
 
-app = FastAPI(title="Demo API CRUD")
+app = FastAPI(title="Demo API CRUD MySQL Usuarios")
+templates = Jinja2Templates(directory="Clase1/templates")
 
-# Modelo simple
-class Item(BaseModel):
-    name: str
-    price: float
-    quantity: int
+class Usuario(BaseModel):
+    nombre: str
+    fecha_inicio: str  # formato: "YYYY-MM-DD"
+    rut: str
 
-# Base de datos en memoria
-items = []
+def get_connection():
+    try:
+        conn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="un2"
+        )
+        if not conn.is_connected():
+            raise HTTPException(status_code=500, detail="No se pudo conectar a la base de datos")
+        return conn
+    except Error as e:
+        raise HTTPException(status_code=500, detail=f"Error conectando a la base de datos: {str(e)}")
 
-# POST: agregar ítem
-@app.post("/items/", response_model=Item)
-def create_item(item: Item):
-    items.append(item)
-    return item
+# Endpoints API JSON
+@app.post("/usuarios/")
+def crear_usuario(usuario: Usuario):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO usuarios (nombre, fecha_inicio, rut) VALUES (%s, %s, %s)",
+        (usuario.nombre, usuario.fecha_inicio, usuario.rut)
+    )
+    conn.commit()
+    user_id = cur.lastrowid
+    cur.close()
+    conn.close()
+    return {"id": user_id, "msg": "usuario creado"}
 
-# GET: listar ítems
-@app.get("/items/", response_model=list[Item])
-def get_items():
-    return items
+@app.get("/usuarios/")
+def listar_usuarios():
+    conn = get_connection()
+    cur = conn.cursor(dictionary=True)
+    cur.execute("SELECT id, nombre, fecha_inicio, rut FROM usuarios")
+    usuarios = cur.fetchall()
+    cur.close()
+    conn.close()
+    return usuarios
 
-# PUT: actualizar ítem por índice
-@app.put("/items/{item_index}", response_model=Item)
-def update_item(item_index: int, item: Item):
-    if item_index < 0 or item_index >= len(items):
-        raise HTTPException(status_code=404, detail="Ítem no encontrado")
-    items[item_index] = item
-    return item
+# Endpoint para servir formulario registro y procesar datos
+@app.get("/register", response_class=HTMLResponse)
+def get_register(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
 
-# DELETE: eliminar ítem por índice
-@app.delete("/items/{item_index}")
-def delete_item(item_index: int):
-    if item_index < 0 or item_index >= len(items):
-        raise HTTPException(status_code=404, detail="Ítem no encontrado")
-    deleted_item = items.pop(item_index)
-    return {"msg": "Ítem eliminado", "item": deleted_item}
+@app.post("/register")
+def register(
+    rut: str = Form(...),
+    nombre: str = Form(...),
+    fecha_inicio: str = Form(...)
+):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO usuarios (nombre, fecha_inicio, rut) VALUES (%s, %s, %s)",
+            (nombre, fecha_inicio, rut)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=f"Error guardando usuario: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return {"msg": "Usuario registrado correctamente"}

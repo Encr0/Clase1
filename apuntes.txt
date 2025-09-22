@@ -1,0 +1,24 @@
+CREATE DATABASE un2; 
+CREATE TABLE usuarios(
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    nombre VARCHAR(80), 
+    fecha_inicio DATE, 
+    rut VARCHAR(18)
+);
+
+instalar fastapi 
+pip install fastapi uvicorn
+
+instalar conexión 
+pip install mysql-connector-python
+
+ejecutar uvicorn
+uvicorn main:app --reload
+
+
+todo lo anterior
+pip install fastapi uvicorn mysql-connector-python pydantic
+
+
+dependencias para plantillas 
+pip install jinja2 fastapi uvicorn mysql-connector-python
