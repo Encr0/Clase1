@@ -22,3 +22,6 @@ pip install fastapi uvicorn mysql-connector-python pydantic
 
 dependencias para plantillas 
 pip install jinja2 fastapi uvicorn mysql-connector-python
+
+multipart
+pip install python-multipart
